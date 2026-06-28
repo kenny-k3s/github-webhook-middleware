@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 
 	"crypto/hmac"
@@ -32,6 +33,9 @@ type GHW struct {
 }
 
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
+	if len(config.Secret) == 0 {
+		config.Secret = os.Getenv("GH_WEBHOOK_SECRET")
+	}
 	if len(config.Secret) == 0 {
 		config.Secret = "SECRET"
 	}
